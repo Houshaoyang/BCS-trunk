@@ -1,9 +1,9 @@
 bcs\tasks.o: ../Middlewares/Third_Party/FreeRTOS/Source/tasks.c
-bcs\tasks.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdlib.h
-bcs\tasks.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\string.h
+bcs\tasks.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stdlib.h
+bcs\tasks.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\string.h
 bcs\tasks.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bcs\tasks.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stddef.h
-bcs\tasks.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdint.h
+bcs\tasks.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stddef.h
+bcs\tasks.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stdint.h
 bcs\tasks.o: ../Core/Inc/FreeRTOSConfig.h
 bcs\tasks.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bcs\tasks.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h

@@ -7,14 +7,14 @@ bcs\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h
 bcs\main.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h
 bcs\main.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xe.h
 bcs\main.o: ../Drivers/CMSIS/Include/core_cm3.h
-bcs\main.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdint.h
+bcs\main.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stdint.h
 bcs\main.o: ../Drivers/CMSIS/Include/cmsis_version.h
 bcs\main.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
 bcs\main.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
 bcs\main.o: ../Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h
 bcs\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h
 bcs\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h
-bcs\main.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stddef.h
+bcs\main.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stddef.h
 bcs\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc_ex.h
 bcs\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h
 bcs\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio_ex.h
@@ -32,7 +32,6 @@ bcs\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 bcs\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 bcs\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 bcs\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
-bcs\main.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_wwdg.h
 bcs\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h
 bcs\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
 bcs\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h

@@ -1,8 +1,8 @@
 bcs\cmsis_os2.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
-bcs\cmsis_os2.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\string.h
+bcs\cmsis_os2.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\string.h
 bcs\cmsis_os2.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h
-bcs\cmsis_os2.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdint.h
-bcs\cmsis_os2.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stddef.h
+bcs\cmsis_os2.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stdint.h
+bcs\cmsis_os2.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stddef.h
 bcs\cmsis_os2.o: ../Drivers/CMSIS/Include/cmsis_compiler.h
 bcs\cmsis_os2.o: ../Drivers/CMSIS/Include/cmsis_armcc.h
 bcs\cmsis_os2.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h

@@ -53,8 +53,6 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
-WWDG_HandleTypeDef hwwdg;
-
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
@@ -62,26 +60,19 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for LIN_Master */
-osThreadId_t LIN_MasterHandle;
-const osThreadAttr_t LIN_Master_attributes = {
-  .name = "LIN_Master",
+/* Definitions for APPTask */
+osThreadId_t APPTaskHandle;
+const osThreadAttr_t APPTask_attributes = {
+  .name = "APPTask",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .priority = (osPriority_t) osPriorityHigh,
 };
-/* Definitions for UDStask */
-osThreadId_t UDStaskHandle;
-const osThreadAttr_t UDStask_attributes = {
-  .name = "UDStask",
+/* Definitions for UDSTask */
+osThreadId_t UDSTaskHandle;
+const osThreadAttr_t UDSTask_attributes = {
+  .name = "UDSTask",
   .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityHigh1,
-};
-/* Definitions for APP */
-osThreadId_t APPHandle;
-const osThreadAttr_t APP_attributes = {
-  .name = "APP",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .priority = (osPriority_t) osPriorityHigh,
 };
 /* USER CODE BEGIN PV */
 
@@ -96,12 +87,10 @@ static void MX_I2C1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USART3_UART_Init(void);
-static void MX_WWDG_Init(void);
 static void MX_TIM3_Init(void);
 void StartDefaultTask(void *argument);
-void LIN_Master_Fcn(void *argument);
-void UDStask1(void *argument);
-void StartTaskAPP(void *argument);
+void APPStartTask(void *argument);
+void UDSStartTask(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -146,7 +135,6 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
-  MX_WWDG_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
@@ -175,14 +163,11 @@ int main(void)
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
-  /* creation of LIN_Master */
-  LIN_MasterHandle = osThreadNew(LIN_Master_Fcn, NULL, &LIN_Master_attributes);
+  /* creation of APPTask */
+  APPTaskHandle = osThreadNew(APPStartTask, NULL, &APPTask_attributes);
 
-  /* creation of UDStask */
-  UDStaskHandle = osThreadNew(UDStask1, NULL, &UDStask_attributes);
-
-  /* creation of APP */
-  APPHandle = osThreadNew(StartTaskAPP, NULL, &APP_attributes);
+  /* creation of UDSTask */
+  UDSTaskHandle = osThreadNew(UDSStartTask, NULL, &UDSTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -512,36 +497,6 @@ static void MX_USART3_UART_Init(void)
 }
 
 /**
-  * @brief WWDG Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_WWDG_Init(void)
-{
-
-  /* USER CODE BEGIN WWDG_Init 0 */
-
-  /* USER CODE END WWDG_Init 0 */
-
-  /* USER CODE BEGIN WWDG_Init 1 */
-
-  /* USER CODE END WWDG_Init 1 */
-  hwwdg.Instance = WWDG;
-  hwwdg.Init.Prescaler = WWDG_PRESCALER_1;
-  hwwdg.Init.Window = 64;
-  hwwdg.Init.Counter = 64;
-  hwwdg.Init.EWIMode = WWDG_EWI_DISABLE;
-  if (HAL_WWDG_Init(&hwwdg) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN WWDG_Init 2 */
-
-  /* USER CODE END WWDG_Init 2 */
-
-}
-
-/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -557,10 +512,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4|GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_8, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PA4 PA5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
+  /*Configure GPIO pins : PA4 PA5 PA8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5|GPIO_PIN_8;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -585,63 +540,50 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+		osDelay(1);
+		//HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
+   // osDelay(500);
+		//HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
   }
   /* USER CODE END 5 */
 }
 
-/* USER CODE BEGIN Header_LIN_Master_Fcn */
+/* USER CODE BEGIN Header_APPStartTask */
 /**
-* @brief Function implementing the LIN_Master thread.
+* @brief Function implementing the APPTask thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_LIN_Master_Fcn */
-void LIN_Master_Fcn(void *argument)
+/* USER CODE END Header_APPStartTask */
+void APPStartTask(void *argument)
 {
-  /* USER CODE BEGIN LIN_Master_Fcn */
+  /* USER CODE BEGIN APPStartTask */
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+  	osDelay(500);
+		HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
   }
-  /* USER CODE END LIN_Master_Fcn */
+  /* USER CODE END APPStartTask */
 }
 
-/* USER CODE BEGIN Header_UDStask1 */
+/* USER CODE BEGIN Header_UDSStartTask */
 /**
-* @brief Function implementing the UDStask thread.
+* @brief Function implementing the UDSTask thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_UDStask1 */
-void UDStask1(void *argument)
+/* USER CODE END Header_UDSStartTask */
+void UDSStartTask(void *argument)
 {
-  /* USER CODE BEGIN UDStask1 */
+  /* USER CODE BEGIN UDSStartTask */
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(500);
+	//	HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
   }
-  /* USER CODE END UDStask1 */
-}
-
-/* USER CODE BEGIN Header_StartTaskAPP */
-/**
-* @brief Function implementing the APP thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartTaskAPP */
-void StartTaskAPP(void *argument)
-{
-  /* USER CODE BEGIN StartTaskAPP */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1);
-  }
-  /* USER CODE END StartTaskAPP */
+  /* USER CODE END UDSStartTask */
 }
 
 /**

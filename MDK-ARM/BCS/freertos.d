@@ -1,7 +1,7 @@
 bcs\freertos.o: ../Core/Src/freertos.c
 bcs\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bcs\freertos.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stddef.h
-bcs\freertos.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdint.h
+bcs\freertos.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stddef.h
+bcs\freertos.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stdint.h
 bcs\freertos.o: ../Core/Inc/FreeRTOSConfig.h
 bcs\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bcs\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
@@ -41,4 +41,3 @@ bcs\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_pwr.h
 bcs\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim.h
 bcs\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_tim_ex.h
 bcs\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h
-bcs\freertos.o: ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_wwdg.h

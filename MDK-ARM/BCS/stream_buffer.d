@@ -1,8 +1,8 @@
 bcs\stream_buffer.o: ../Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c
-bcs\stream_buffer.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdint.h
-bcs\stream_buffer.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\string.h
+bcs\stream_buffer.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stdint.h
+bcs\stream_buffer.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\string.h
 bcs\stream_buffer.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bcs\stream_buffer.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stddef.h
+bcs\stream_buffer.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stddef.h
 bcs\stream_buffer.o: ../Core/Inc/FreeRTOSConfig.h
 bcs\stream_buffer.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bcs\stream_buffer.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h

@@ -23,7 +23,6 @@
 "bcs\stm32f1xx_hal_tim.o"
 "bcs\stm32f1xx_hal_tim_ex.o"
 "bcs\stm32f1xx_hal_uart.o"
-"bcs\stm32f1xx_hal_wwdg.o"
 "bcs\system_stm32f1xx.o"
 "bcs\croutine.o"
 "bcs\event_groups.o"

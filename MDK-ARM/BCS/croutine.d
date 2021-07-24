@@ -1,7 +1,7 @@
 bcs\croutine.o: ../Middlewares/Third_Party/FreeRTOS/Source/croutine.c
 bcs\croutine.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
-bcs\croutine.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stddef.h
-bcs\croutine.o: D:\Program Files (x86)\keil\ARM\ARMCC\Bin\..\include\stdint.h
+bcs\croutine.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stddef.h
+bcs\croutine.o: D:\install\MDK526\ARM\ARMCC\Bin\..\include\stdint.h
 bcs\croutine.o: ../Core/Inc/FreeRTOSConfig.h
 bcs\croutine.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h
 bcs\croutine.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h
