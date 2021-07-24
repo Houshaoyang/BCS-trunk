@@ -98,6 +98,10 @@ void UDSStartTask(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+CAN_TxHeaderTypeDef Can_Tx;
+CAN_RxHeaderTypeDef Can_Rx;
+CAN_FilterTypeDef CAN_FilterInitStructure;
+
 
 /* USER CODE END 0 */
 
@@ -137,7 +141,8 @@ int main(void)
   MX_USART3_UART_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_CAN_Start(&hcan);
+  HAL_CAN_ActivateNotification(&hcan,CAN_IT_TX_MAILBOX_EMPTY | CAN_IT_RX_FIFO0_MSG_PENDING);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -314,6 +319,18 @@ static void MX_CAN_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN CAN_Init 2 */
+	CAN_FilterInitStructure.FilterActivation = ENABLE;
+	CAN_FilterInitStructure.FilterBank = 1;
+	CAN_FilterInitStructure.FilterMode = CAN_FILTERMODE_IDMASK;
+	CAN_FilterInitStructure.FilterScale = CAN_FILTERSCALE_32BIT;
+	CAN_FilterInitStructure.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+
+	CAN_FilterInitStructure.FilterIdHigh =0x0000 ;
+	CAN_FilterInitStructure.FilterIdLow = 0x0000;
+	CAN_FilterInitStructure.FilterMaskIdHigh = 0x0000;
+	CAN_FilterInitStructure.FilterMaskIdLow = 0x0000;
+
+	HAL_CAN_ConfigFilter(&hcan,&CAN_FilterInitStructure);
 
   /* USER CODE END CAN_Init 2 */
 
@@ -524,6 +541,17 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan)
+{
+	//HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
+}
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+	uint8_t adata[8] = {0};
+	HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
+	HAL_CAN_GetRxMessage(hcan,CAN_RX_FIFO0,&Can_Rx,adata);
+}
 
 /* USER CODE END 4 */
 
@@ -558,11 +586,20 @@ void StartDefaultTask(void *argument)
 void APPStartTask(void *argument)
 {
   /* USER CODE BEGIN APPStartTask */
+  uint8_t tdata[8] = {0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77};
+  uint32_t pTxMailbox = 0;
+  Can_Tx.StdId = 0x123;
+  Can_Tx.ExtId = 0x123;
+  Can_Tx.IDE = 0;
+  Can_Tx.RTR = 0;
+  Can_Tx.DLC = 8;
+
   /* Infinite loop */
   for(;;)
   {
   	osDelay(500);
-		HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
+	HAL_CAN_AddTxMessage(&hcan,&Can_Tx,tdata,&pTxMailbox);
+
   }
   /* USER CODE END APPStartTask */
 }
