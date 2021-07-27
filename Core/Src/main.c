@@ -53,10 +53,10 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
+/* Definitions for AlarmTask */
+osThreadId_t AlarmTaskHandle;
+const osThreadAttr_t AlarmTask_attributes = {
+  .name = "AlarmTask",
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
@@ -88,7 +88,7 @@ static void MX_USART1_UART_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_TIM3_Init(void);
-void StartDefaultTask(void *argument);
+void StartAlarmTask(void *argument);
 void APPStartTask(void *argument);
 void UDSStartTask(void *argument);
 
@@ -101,6 +101,8 @@ void UDSStartTask(void *argument);
 CAN_TxHeaderTypeDef Can_Tx;
 CAN_RxHeaderTypeDef Can_Rx;
 CAN_FilterTypeDef CAN_FilterInitStructure;
+#define true 1
+#define false 0
 
 
 /* USER CODE END 0 */
@@ -141,6 +143,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
+//  HAL_TIM_Base_Start_IT(&htim3);
   HAL_CAN_Start(&hcan);
   HAL_CAN_ActivateNotification(&hcan,CAN_IT_TX_MAILBOX_EMPTY | CAN_IT_RX_FIFO0_MSG_PENDING);
   /* USER CODE END 2 */
@@ -165,8 +168,8 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* creation of AlarmTask */
+  AlarmTaskHandle = osThreadNew(StartAlarmTask, NULL, &AlarmTask_attributes);
 
   /* creation of APPTask */
   APPTaskHandle = osThreadNew(APPStartTask, NULL, &APPTask_attributes);
@@ -310,7 +313,7 @@ static void MX_CAN_Init(void)
   hcan.Init.TimeSeg2 = CAN_BS2_8TQ;
   hcan.Init.TimeTriggeredMode = DISABLE;
   hcan.Init.AutoBusOff = DISABLE;
-  hcan.Init.AutoWakeUp = DISABLE;
+  hcan.Init.AutoWakeUp = ENABLE;
   hcan.Init.AutoRetransmission = DISABLE;
   hcan.Init.ReceiveFifoLocked = DISABLE;
   hcan.Init.TransmitFifoPriority = DISABLE;
@@ -389,9 +392,9 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 0;
+  htim3.Init.Prescaler = 199;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 65535;
+  htim3.Init.Period = 3599;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
@@ -549,29 +552,37 @@ void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan)
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 	uint8_t adata[8] = {0};
-	HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
+//	HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
 	HAL_CAN_GetRxMessage(hcan,CAN_RX_FIFO0,&Can_Rx,adata);
 }
 
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
+/* USER CODE BEGIN Header_StartAlarmTask */
 /**
-  * @brief  Function implementing the defaultTask thread.
+  * @brief  Function implementing the AlarmTask thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
+/* USER CODE END Header_StartAlarmTask */
+void StartAlarmTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
+	uint8_t tdata[8] = {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+  uint32_t pTxMailbox = 0;
+  Can_Tx.StdId = 0x100;
+  Can_Tx.ExtId = 0x123;
+  Can_Tx.IDE = 0;
+  Can_Tx.RTR = 0;
+  Can_Tx.DLC = 8;
   /* Infinite loop */
   for(;;)
   {
-		osDelay(1);
-		//HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
-   // osDelay(500);
-		//HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
+		osDelay(10);
+		if(false == HAL_CAN_IsSleepActive)
+		{
+			HAL_CAN_AddTxMessage(&hcan,&Can_Tx,tdata,&pTxMailbox);
+		}
   }
   /* USER CODE END 5 */
 }
@@ -586,20 +597,19 @@ void StartDefaultTask(void *argument)
 void APPStartTask(void *argument)
 {
   /* USER CODE BEGIN APPStartTask */
-  uint8_t tdata[8] = {0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77};
+	uint8_t tdata[8] = {0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88};
   uint32_t pTxMailbox = 0;
-  Can_Tx.StdId = 0x123;
+  Can_Tx.StdId = 0x150;
   Can_Tx.ExtId = 0x123;
   Can_Tx.IDE = 0;
   Can_Tx.RTR = 0;
   Can_Tx.DLC = 8;
-
   /* Infinite loop */
   for(;;)
   {
   	osDelay(500);
-	HAL_CAN_AddTxMessage(&hcan,&Can_Tx,tdata,&pTxMailbox);
-
+		HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
+		HAL_CAN_AddTxMessage(&hcan,&Can_Tx,tdata,&pTxMailbox);
   }
   /* USER CODE END APPStartTask */
 }
@@ -614,10 +624,21 @@ void APPStartTask(void *argument)
 void UDSStartTask(void *argument)
 {
   /* USER CODE BEGIN UDSStartTask */
+	uint8_t can_sleep_en=0 ;
   /* Infinite loop */
   for(;;)
   {
-    osDelay(500);
+    osDelay(3000);
+	if(can_sleep_en != 0)
+	{
+		can_sleep_en =0;
+		HAL_CAN_WakeUp(&hcan);
+	}
+	else
+	{
+		can_sleep_en =1;
+		HAL_CAN_RequestSleep(&hcan);
+	}
 	//	HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_8);
   }
   /* USER CODE END UDSStartTask */
@@ -634,12 +655,22 @@ void UDSStartTask(void *argument)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
+  uint8_t tdata[8] = {0x00,0x11,0x22,0x33,0x55,0x55,0x66,0x88};
+  uint32_t pTxMailbox = 0;
+  Can_Tx.StdId = 0x155;
+  Can_Tx.ExtId = 0x123;
+  Can_Tx.IDE = 0;
+  Can_Tx.RTR = 0;
+  Can_Tx.DLC = 8;
 
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM1) {
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
+  if (htim->Instance == htim3.Instance) {
+	HAL_CAN_AddTxMessage(&hcan,&Can_Tx,tdata,&pTxMailbox);
+  }
 
   /* USER CODE END Callback 1 */
 }
